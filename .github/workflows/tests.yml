@@ -1,0 +1,44 @@
+name: Tests
+
+on:
+  push:
+  schedule:
+    - cron: "0 2 * * *"   # every night at 02:00 UTC
+  workflow_dispatch:       # manual run from the GitHub UI
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Start the simulator in the background
+        run: nohup python simulator/app.py > simulator.log 2>&1 &
+
+      - name: Run smoke tests (on every push)
+        if: github.event_name == 'push'
+        run: pytest -m smoke -v
+
+      - name: Run all tests (nightly or manual)
+        if: github.event_name != 'push'
+        run: pytest -v
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            reports/
+            simulator.log
