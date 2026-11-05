@@ -3,7 +3,7 @@ import pytest
 @pytest.mark.smoke
 def test_status_returns_200(client):
     response = client.get_status()
-    assert response.status_code == 400
+    assert response.status_code == 200
 
 @pytest.mark.smoke
 @pytest.mark.parametrize("relay_id",[0,1])
