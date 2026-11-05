@@ -62,3 +62,6 @@ class RelayClient:
                 pass  # the device is not reachable yet, try again
             time.sleep(interval)
         raise TimeoutError(f"Device was not ready within {timeout} seconds")
+
+    def get_status_burst(self, count):
+        return [self.get_status() for _ in range(count)]

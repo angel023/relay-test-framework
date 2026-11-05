@@ -22,5 +22,5 @@ def test_invalid_relay_requests(client, relay_id, state, expected_status):
 @pytest.mark.negative
 def test_invalid_request_does_not_change_state(client):
     client.set_relay(0, "on")
-    client.set_relay(0, "banana")  # невалидна заявка
+    client.set_relay(0, "banana")  # invalid req
     assert client.get_status().json()["relays"]["0"] == "on"
